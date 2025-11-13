@@ -2,7 +2,7 @@ import csv
 import json
 
 csv_file = "CarSales_Dataset.csv"
-cars_output = "cars.json"
+cars_output = "output/cars.json"
 # dealers_output = "./output/dealers.json"
 
 with open(csv_file, encoding="utf-8") as f:
