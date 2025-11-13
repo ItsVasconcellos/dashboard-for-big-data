@@ -1,16 +1,28 @@
 import csv
 import json
+from bson import ObjectId   
 
 csv_file = "CarSales_Dataset.csv"
 cars_output = "output/cars.json"
-# dealers_output = "./output/dealers.json"
+dealers_output = "./output/dealers.json"
 
 with open(csv_file, encoding="utf-8") as f:
     reader = csv.DictReader(f)
     cars_map = {}
-    # dealers_map = {}
+    dealers_map = {}
     for index,row in enumerate(reader):
         car_id = row['CarID']
+        dealer_name = row["DealerName"]
+        if dealer_name not in dealers_map:
+            new_dealer = {
+                "_id": str(ObjectId()),
+                "name": dealer_name,
+                "city": row["DealerCity"],
+                "latitude": row["Latitude"],
+                "longitude": row["Longitude"]
+            }
+            dealers_map[dealer_name] = new_dealer
+            dealer_id = dealers_map[dealer_name]["_id"]
         if car_id not in cars_map:
             new_car = {
                 "_id": car_id,
@@ -22,6 +34,7 @@ with open(csv_file, encoding="utf-8") as f:
                 "year": int(row["Year_of_Manufacturing"]),
                 "mileage": int(row["Mileage"]),
                 "price": int(row["Price"]),
+                "dealer_id": dealer_id
             }
             if row["AccidentID"] is not (None or ""):
                 new_car["accidents"]=[{
@@ -69,7 +82,11 @@ with open(csv_file, encoding="utf-8") as f:
                     car["services"].append(new_service)
 
 cars_list = list(cars_map.values())
+dealer_list = list(dealers_map.values())
 
 # Write list of dictionaries to JSON file
 with open(cars_output, "w", encoding='utf-8') as f:
     json.dump(cars_list, f, indent=2)
+
+with open(dealers_output, "w", encoding='utf-8') as f:
+    json.dump(dealer_list, f, indent=2)
