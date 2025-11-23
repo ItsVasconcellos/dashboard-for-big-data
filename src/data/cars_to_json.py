@@ -43,6 +43,8 @@ with open(csv_file, encoding="utf-8") as f:
                     "repair_cost": row["Cost_of_Repair"],
                     "severity": row["Severity"] 
                 }]
+            else:
+                new_car["accidents"] = []
             if row["ServiceID"] is not (None or ""):
                 new_car["services"]=[{
                     "service_id": row["ServiceID"],
@@ -50,6 +52,8 @@ with open(csv_file, encoding="utf-8") as f:
                     "type": row["ServiceType"],
                     "cost": row["Cost_of_Service"]
                 }]
+            else:
+                new_car["services"] = []
             cars_map[car_id] = new_car
 
         else:
