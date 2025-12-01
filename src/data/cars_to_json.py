@@ -22,7 +22,7 @@ with open(csv_file, encoding="utf-8") as f:
                 "longitude": row["Longitude"]
             }
             dealers_map[dealer_name] = new_dealer
-            dealer_id = dealers_map[dealer_name]["_id"]
+            
         if car_id not in cars_map:
             new_car = {
                 "_id": car_id,
@@ -34,7 +34,7 @@ with open(csv_file, encoding="utf-8") as f:
                 "year": int(row["Year_of_Manufacturing"]),
                 "mileage": int(row["Mileage"]),
                 "price": int(row["Price"]),
-                "dealer_id": dealer_id
+                "dealer_id": dealers_map[dealer_name]["_id"]            
             }
             if row["AccidentID"] is not (None or ""):
                 new_car["accidents"]=[{
