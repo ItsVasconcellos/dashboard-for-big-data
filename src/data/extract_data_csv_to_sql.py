@@ -1,6 +1,7 @@
 import csv
 import uuid
 from pathlib import Path
+from datetime import datetime
 
 csv_file = "CarSales_Dataset.csv"
 output_dir = Path("output")
@@ -34,7 +35,7 @@ with open(csv_file, encoding="utf-8") as f:
                 "engine_size": row["Engine size"],
                 "fuel_type": row["Fuel_Type"],
                 "year_of_manufacturing": int(row["Year_of_Manufacturing"]),
-                "manufacter_id": manufacturer[manufacturer_name]["manufacturer_id"]
+                "manufacturer_id": manufacturer[manufacturer_name]["manufacturer_id"]
             }
             manufacturer_models[manufacturer_model_key] = new_manufacturer_model
 
@@ -84,7 +85,7 @@ with open(csv_file, encoding="utf-8") as f:
         if accident_id not in accidents and accident_id not in (None or ""):
             new_accident = {
                 "accident_id": uuid.uuid4(),
-                "date_of_accident": row["Date_of_Accident"],
+                "date_of_accident": datetime.strptime(row["Date_of_Accident"], "%d/%m/%Y").strftime("%Y-%m-%d"),
                 "description": row["Description"],
                 "repair_cost": row["Cost_of_Repair"],
                 "severity": str(row["Severity"]).capitalize(),
@@ -96,13 +97,13 @@ with open(csv_file, encoding="utf-8") as f:
         if service_id not in services and service_id not in (None or ""):
             new_service = {
                 "service_id": uuid.uuid4(),
-                "date_of_service": row["Date_of_Service"],
+                "date_of_service": datetime.strptime(row["Date_of_Service"], "%d/%m/%Y").strftime("%Y-%m-%d"),
                 "service_type": row["ServiceType"],
                 "cost": row["Cost_of_Service"],
                 "car_id": car[car_id]["car_id"]   
             }
             services[service_id] = new_service
-            
+
 
 
 def write_csv(filename, fieldnames, rows):
@@ -119,7 +120,7 @@ write_csv("ManufacturerModels.csv", [
     "engine_size",
     "fuel_type",
     "year_of_manufacturing",
-    "manufacter_id"
+    "manufacturer_id"
 ], list(manufacturer_models.values()))
 write_csv("Dealers.csv", ["dealer_id", "name", "city", "latitude", "longitude"], list(dealer.values()))
 write_csv("Features.csv", ["feature_id", "description"], list(features.values()))

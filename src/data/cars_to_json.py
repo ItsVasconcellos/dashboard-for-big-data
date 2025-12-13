@@ -1,7 +1,7 @@
 import csv
 import json
 from bson import ObjectId   
-
+import datetime
 csv_file = "CarSales_Dataset.csv"
 cars_output = "output/cars.json"
 dealers_output = "./output/dealers.json"
@@ -48,7 +48,7 @@ with open(csv_file, encoding="utf-8") as f:
             if row["ServiceID"] is not (None or ""):
                 new_car["services"]=[{
                     "service_id": row["ServiceID"],
-                    "date": row["Date_of_Service"],
+                    "date": datetime.datetime.strptime(row["Date_of_Service"], "%d/%m/%Y").isoformat(),
                     "type": row["ServiceType"],
                     "cost": row["Cost_of_Service"]
                 }]
@@ -79,7 +79,7 @@ with open(csv_file, encoding="utf-8") as f:
                 if service_id not in {a["service_id"] for a in car["services"]} and service_id != None:
                     new_service = {
                         "service_id": row["ServiceID"],
-                        "date": row["Date_of_Service"],
+                        "date": datetime.datetime.strptime(row["Date_of_Service"], "%d/%m/%Y").isoformat(),
                         "type": row["ServiceType"],
                         "cost": row["Cost_of_Service"]
                     }
@@ -87,7 +87,6 @@ with open(csv_file, encoding="utf-8") as f:
 
 cars_list = list(cars_map.values())
 dealer_list = list(dealers_map.values())
-
 # Write list of dictionaries to JSON file
 with open(cars_output, "w", encoding='utf-8') as f:
     json.dump(cars_list, f, indent=2)
