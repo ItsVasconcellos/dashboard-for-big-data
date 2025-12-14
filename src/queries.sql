@@ -1,5 +1,7 @@
 --  1. List all cars sold by each dealer, showing the number of cars sold and the total sales value per dealer
-Select c.dealer_id, Sum(c.price), count(c.car_id), d."name" from public."Cars" c join "Dealers" d on c.dealer_id = d.dealer_id group by c.dealer_id, d."name" order by d."name"
+Select c.dealer_id, Sum(c.price), count(c.car_id), d."name" from public."Cars" c 
+join "Dealers" d on c.dealer_id = d.dealer_id group by c.dealer_id, d."name" order by d."name"
+
 
 -- 2. Calculate the average selling price by manufacturer and year of manufacturing.    
 select ROUND(AVG(c.price)::numeric,1), m."name", mm.year_of_manufacturing from "Manufacturers" m join "ManufacturersModels" mm on mm.manufacturer_id = m.manufacturer_id
