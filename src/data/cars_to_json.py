@@ -40,6 +40,7 @@ with open(csv_file, encoding="utf-8") as f:
                 new_car["accidents"]=[{
                     "accident_id": row["AccidentID"],
                     "description": row["Description"],
+                    "date": datetime.datetime.strptime(row["Date_of_Accident"], "%d/%m/%Y").isoformat(),
                     "repair_cost": row["Cost_of_Repair"],
                     "severity": row["Severity"] 
                 }]
@@ -68,6 +69,7 @@ with open(csv_file, encoding="utf-8") as f:
                 if accident_id not in {a["accident_id"] for a in car["accidents"]} and accident_id != None:
                     new_accident = {
                         "accident_id": row["AccidentID"],
+                        "date": datetime.datetime.strptime(row["Date_of_Accident"], "%d/%m/%Y").isoformat(),
                         "description": row["Description"],
                         "repair_cost": row["Cost_of_Repair"],
                         "severity": row["Severity"] 
