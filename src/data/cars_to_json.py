@@ -41,7 +41,7 @@ with open(csv_file, encoding="utf-8") as f:
                     "accident_id": row["AccidentID"],
                     "description": row["Description"],
                     "date": datetime.datetime.strptime(row["Date_of_Accident"], "%d/%m/%Y").isoformat(),
-                    "repair_cost": row["Cost_of_Repair"],
+                    "repair_cost": int(row["Cost_of_Repair"]),
                     "severity": row["Severity"] 
                 }]
             else:
@@ -51,7 +51,7 @@ with open(csv_file, encoding="utf-8") as f:
                     "service_id": row["ServiceID"],
                     "date": datetime.datetime.strptime(row["Date_of_Service"], "%d/%m/%Y").isoformat(),
                     "type": row["ServiceType"],
-                    "cost": row["Cost_of_Service"]
+                    "cost": int(row["Cost_of_Service"])
                 }]
             else:
                 new_car["services"] = []
@@ -71,7 +71,7 @@ with open(csv_file, encoding="utf-8") as f:
                         "accident_id": row["AccidentID"],
                         "date": datetime.datetime.strptime(row["Date_of_Accident"], "%d/%m/%Y").isoformat(),
                         "description": row["Description"],
-                        "repair_cost": row["Cost_of_Repair"],
+                        "repair_cost": int(row["Cost_of_Repair"]),
                         "severity": row["Severity"] 
                     }
                     car["accidents"].append(new_accident)
@@ -83,7 +83,7 @@ with open(csv_file, encoding="utf-8") as f:
                         "service_id": row["ServiceID"],
                         "date": datetime.datetime.strptime(row["Date_of_Service"], "%d/%m/%Y").isoformat(),
                         "type": row["ServiceType"],
-                        "cost": row["Cost_of_Service"]
+                        "cost": int(row["Cost_of_Service"])
                     }
                     car["services"].append(new_service)
 
