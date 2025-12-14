@@ -127,16 +127,95 @@ db.Vehicles.aggregate([
 ]);
 
 // 10. Find the top 3 dealers with the highest ratio of accident-prone cars to total cars sold. 
-
+db.Vehicles.aggregate([{$group: { _id: "$dealer_id", totalAccidents: { $sum: {$cond: {
+            if: { $gt: [{ $size: "$accidents" }, 0] },
+            then: 1,
+            else: 0
+          }}}, cars_sold: { $sum: 1 }}},
+  {$lookup: {from: "Dealers", localField: "_id", foreignField: "_id", as: "dealerDetails"}},
+  { $unwind: "$dealerDetails" },
+  {$addFields:{
+    accidentProneRatio: {$divide: ["totalAccidents", "cars_sold"]}
+  }},
+  { $project: { _id: 0, dealer_id: "$_id", name: "$dealerDetails.name",cars_sold: 1, totalAccidents: 1, }},
+  {$limit:3},  
+	{ $sort: {name:1}}])
 
 // 11. Identify the most profitable manufacturer based on total sales minus average repair costs per car. 
 
 // 12. Compare the service frequency trend (number of services per year) across the last five years. 
+db.Vehicles.aggregate([
+  { $unwind: "$services" },
+  {
+    $addFields: {
+      serviceDate: { $toDate: "$services.date" }
+    }
+  },
+  {
+    $addFields: {
+      year: { $year: "$serviceDate" }
+    }
+  },
+  {
+    $group: {
+      _id: "$year",
+      TotalSerivces: {$sum: 1}
+    }
+  },
+  {
+    $sort:{
+      _id: 1
+    }
+  }
+])
 
 // 13. Find cars that have not been serviced in the last 24 months but have recorded accidents in the same period. 
+var twoYearsAgo = new Date();
+twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
+db.Vehicles.aggregate([
+  {
+    $addFields: {
+      recentAccidents: {
+        $filter: {
+          input: "$accidents",
+          as: "acc",
+          cond: {
+            $gte: ["$$acc.date", twoYearsAgo]
+          }
+        }
+      }
+    }
+  },
+  {
+    $addFields: {
+      numberOfServices: { $size: "$services" },
+      numberOfIncidents: { $size: "$accidents" } 
+    }
+  },
+  {
+    $match: {
+      "numberOfServices": {$eq: 0},
+      "numberOfIncidents": {$gt: 0}
+    }
+  },
+  {
+    $sort: {
+      "numberOfIncidents": -1
+    }
+  }
+])
 
 // 14. Compare the severity distribution of accidents (e.g., Minor, Moderate, Major) across all cars, grouped by manufacturer. 
-
+db.Vehicles.aggregate([
+  {$unwind: "$accidents"},
+  {
+    $group: {
+    	_id: {"manufacturer": "$manufacturer", "severity": "$accidents.severity"},
+  		totalAccidents: {$sum: 1}
+    }
+  },
+  {$sort: {"_id.manufacturer":1}}
+])
 
 // 15. Identify the most common features among cars priced above £25,000.
 db.Vehicles.aggregate([{$match:{'price': {$gt:25000}}},{$unwind:'$features'},{$group:{_id:"$features", count:{$sum:1}}}])
