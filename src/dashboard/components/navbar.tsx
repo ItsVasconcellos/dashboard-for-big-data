@@ -1,16 +1,10 @@
-// components/main-nav.tsx
-"use client" // <--- This is the key
+"use client"
 
-import * as React from "react"
 import Link from "next/link"
-
-// Import shadcn components
 import {
-  NavigationMenu,
-  NavigationMenuItem,
+  NavigationMenu, NavigationMenuItem,
   NavigationMenuLink,
-  NavigationMenuList,
-  navigationMenuTriggerStyle,
+  NavigationMenuList, navigationMenuTriggerStyle
 } from "@/components/ui/navigation-menu"
 
 export function Navbar() {
@@ -18,24 +12,16 @@ export function Navbar() {
     <div className="w-full flex justify-center py-4 border-b">
       <NavigationMenu>
         <NavigationMenuList>
-          
-          <NavigationMenuItem>
-            <Link href="/">
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Dashboard
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
-
-          {/* Example Item 2 */}
-          <NavigationMenuItem>
-            <Link href="/table" legacyBehavior passHref>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Table
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
-
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                  <Link href="/">Dashboard</Link>
+                </NavigationMenuLink>
+            </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                  <Link href="/table">Table</Link>
+                </NavigationMenuLink>
+            </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
     </div>
