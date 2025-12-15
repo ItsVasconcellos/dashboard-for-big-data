@@ -1,10 +1,10 @@
-"use client"
-import TableComponent from "@/components/table";
-import { Tabs,TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { useEffect, useState } from "react";
 
-export default function Table(){
-  const [activeTab, setActiveTab] = useState("dealers");
+import { getVehicles } from "@/api/vehicles/get";
+import TablePage from "./table";
+
+export default async function Table(){
+  const cars = await getVehicles();
+  console.log(cars.length);
 
   // useEffect(() => {
   //     console.log("Active Tab:", activeTab);
@@ -12,18 +12,7 @@ export default function Table(){
 
   return(
     <div className="max-w-7xl mx-auto py-8">
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="dealers">Dealers</TabsTrigger>
-          <TabsTrigger value="vehicles">Vehicles</TabsTrigger>
-        </TabsList>
-        <TabsContent value="dealers">
-          <TableComponent columns={[]} data={[]}/>
-        </TabsContent>
-        <TabsContent value="vehicles">
-          <TableComponent columns={[]} data={[]}/>
-        </TabsContent>
-      </Tabs>
+      <TablePage/>
     </div>
   );
 }

@@ -50,7 +50,7 @@ export default function Dashboard() {
             <div className="flex flew-row items-center gap-4">
               {/* sales throught the months */}
               <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-                <BarChart accessibilityLayer data={chartData}>
+                <BarChart accessibilityLayer data={chartData} className=" w-8/9">
                   <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
                   <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
                 </BarChart>

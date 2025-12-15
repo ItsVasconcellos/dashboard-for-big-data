@@ -4,18 +4,21 @@ generator client {
 
 datasource db {
     provider = "mongodb"
+    url      = env("DATABASE_URL")
 }
 
-model Dealer {
-    id        String    @id @default(cuid()) @map("_id") @db.ObjectId
+model Dealers {
+    id        String     @id @default(cuid()) @map("_id") @db.ObjectId
     name      String
     city      String
     latitude  Float
     longitude Float
-    vehicles  Vehicle[]
+    vehicles  Vehicles[]
+
+    @@map("Dealers")
 }
 
-model Vehicle {
+model Vehicles {
     id           String     @id @default(cuid()) @map("_id") @db.ObjectId
     manufacturer String
     model        String
@@ -28,7 +31,9 @@ model Vehicle {
     dealerId     String     @db.ObjectId
     accidents    Accident[]
     services     Service[]
-    dealer       Dealer     @relation(fields: [dealerId], references: [id])
+    dealer       Dealers    @relation(fields: [dealerId], references: [id])
+
+    @@map("Vehicles")
 }
 
 type Accident {
