@@ -1,9 +1,25 @@
 "use client"
+import { getVehicles } from "@/api/vehicles/get";
 import TableComponent from "@/components/table";
 import { Tabs,TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+
 export default function TablePage(){
     const [activeTab, setActiveTab] = useState("dealers");
+    const { data: Vehicles, isLoading, error } = useQuery({
+      queryKey: ["vehicles"],
+      queryFn: () => getVehicles(),
+    });
+    // const { data: dealersData, isLoading: dealersLoading, error: dealersError } = useQuery({
+    //   queryKey: ["dealers"],
+    //   queryFn: () => (return {[]}),
+    // });
+    const filteredVehicles = Vehicles?.map(item => {
+      const { accidents, services, ...rest } = item;
+      return rest;
+    });
+    if(isLoading ) return <div>Loading...</div>
     return(
         <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
@@ -11,10 +27,9 @@ export default function TablePage(){
           <TabsTrigger value="vehicles">Vehicles</TabsTrigger>
         </TabsList>
         <TabsContent value="dealers">
-          <TableComponent columns={[]} data={[]}/>
         </TabsContent>
         <TabsContent value="vehicles">
-          <TableComponent columns={[]} data={[]}/>
+          <TableComponent columns={filteredVehicles ? Object.keys(filteredVehicles[0] || {}).map(key => ({ accessorKey: key, header: key })) : []} data={filteredVehicles ?? []}/>
         </TabsContent>
       </Tabs>
 )}
