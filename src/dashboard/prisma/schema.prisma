@@ -1,0 +1,47 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mongodb"
+}
+
+model Dealer {
+    id        String    @id @default(cuid()) @map("_id") @db.ObjectId
+    name      String
+    city      String
+    latitude  Float
+    longitude Float
+    vehicles  Vehicle[]
+}
+
+model Vehicle {
+    id           String     @id @default(cuid()) @map("_id") @db.ObjectId
+    manufacturer String
+    model        String
+    engine_size  String
+    features     String[]
+    fuel_type    String
+    year         Int
+    mileage      Int
+    price        Int
+    dealerId     String     @db.ObjectId
+    accidents    Accident[]
+    services     Service[]
+    dealer       Dealer     @relation(fields: [dealerId], references: [id])
+}
+
+type Accident {
+    accident_id String
+    description String
+    date        String
+    repair_cost Int
+    severity    String
+}
+
+type Service {
+    service_id   String
+    date         String
+    type         String
+    service_cost Int
+}
