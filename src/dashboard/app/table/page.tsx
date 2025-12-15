@@ -1,4 +1,5 @@
 "use client"
+import { getDealers } from "@/api/dealers/get";
 import { getVehicles } from "@/api/vehicles/get";
 import TableComponent from "@/components/table";
 import { Tabs,TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -11,10 +12,10 @@ export default function TablePage(){
       queryKey: ["vehicles"],
       queryFn: () => getVehicles(),
     });
-    // const { data: dealersData, isLoading: dealersLoading, error: dealersError } = useQuery({
-    //   queryKey: ["dealers"],
-    //   queryFn: () => (return {[]}),
-    // });
+    const { data: dealersData, isLoading: dealersLoading, error: dealersError } = useQuery({
+      queryKey: ["dealers"],
+      queryFn: () => getDealers(),
+    });
     const filteredVehicles = Vehicles?.map(item => {
       const { accidents, services, ...rest } = item;
       return rest;
@@ -29,6 +30,7 @@ export default function TablePage(){
           <TabsTrigger value="vehicles">Vehicles</TabsTrigger>
         </TabsList>
         <TabsContent value="dealers">
+          <TableComponent columns={dealersData ? Object.keys(dealersData[0] || {}).map(key => ({ accessorKey: key, header: key })) : []} data={dealersData ?? []}/>
         </TabsContent>
         <TabsContent value="vehicles">
           <TableComponent columns={filteredVehicles ? Object.keys(filteredVehicles[0] || {}).map(key => ({ accessorKey: key, header: key })) : []} data={filteredVehicles ?? []}/>

@@ -1,4 +1,3 @@
-// api/prisma.ts (or wherever you define your data function)
 "use server"
 import { prisma } from "@/api/prisma";
 
