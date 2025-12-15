@@ -18,8 +18,8 @@ with open(csv_file, encoding="utf-8") as f:
                 "_id": str(ObjectId()),
                 "name": dealer_name,
                 "city": row["DealerCity"],
-                "latitude": row["Latitude"],
-                "longitude": row["Longitude"]
+                "latitude": float(row["Latitude"]),
+                "longitude": float(row["Longitude"])
             }
             dealers_map[dealer_name] = new_dealer
             
