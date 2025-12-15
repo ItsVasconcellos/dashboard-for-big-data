@@ -4,7 +4,7 @@ import TablePage from "./table";
 
 export default async function Table(){
   const cars = await getVehicles();
-  console.log(cars.length);
+  console.log(cars);
 
   // useEffect(() => {
   //     console.log("Active Tab:", activeTab);

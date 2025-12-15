@@ -28,25 +28,25 @@ model Vehicles {
     year         Int
     mileage      Int
     price        Int
-    dealerId     String     @db.ObjectId
+    dealerId     String?    @db.ObjectId
     accidents    Accident[]
     services     Service[]
-    dealer       Dealers    @relation(fields: [dealerId], references: [id])
+    dealer       Dealers?   @relation(fields: [dealerId], references: [id])
 
     @@map("Vehicles")
 }
 
 type Accident {
-    accident_id String
-    description String
-    date        String
-    repair_cost Int
-    severity    String
+    accident_id String?
+    description String?
+    date        String?
+    repair_cost Int?
+    severity    String?
 }
 
 type Service {
-    service_id   String
-    date         String
-    type         String
-    service_cost Int
+    service_id   String?
+    date         String?
+    type         String?
+    service_cost Int?
 }
