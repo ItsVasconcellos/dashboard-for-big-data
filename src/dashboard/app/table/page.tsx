@@ -2,6 +2,7 @@
 import { getDealers } from "@/api/dealers/get";
 import { getVehicles } from "@/api/vehicles/get";
 import TableComponent from "@/components/table";
+import VehiclesTableComponent from "@/components/tableVehicles";
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs,TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
@@ -35,8 +36,8 @@ export default function TablePage(){
           <TabsTrigger value="vehicles">Vehicles</TabsTrigger>
         </TabsList>
         <TabsContent value="dealers">
-          <div className="flex flex-row items-center py-6 gap-4">
-            <Card className="p-6">
+          {/* <div className="flex flex-row items-center py-6 gap-4"> */}
+            {/* <Card className="p-6">
                 <CardContent>
                   <h2 className="mb-2 text-2xl font-bold">Welcome to the Dashboard</h2>
                   <p className="text-muted-foreground">
@@ -58,12 +59,12 @@ export default function TablePage(){
                     This is your dashboard where you can monitor key metrics and performance indicators.
                   </p>
                 </CardContent>
-              </Card>
-            </div>
-          <TableComponent columns={dealersData ? Object.keys(dealersData[0] || {}).map(key => ({ accessorKey: key, header: key })) : []} data={dealersData ?? []}/>
+              </Card> */}
+            {/* </div> */}
+          <TableComponent columns={dealersData ? Object.keys(dealersData[0] || {}).map(key => ({ accessorKey: key, header: key.charAt(0).toUpperCase() + key.slice(1).replace("_"," ") })) : []} data={dealersData ?? []}/>
         </TabsContent>
         <TabsContent value="vehicles">
-          <TableComponent columns={filteredVehicles ? Object.keys(filteredVehicles[0] || {}).map(key => ({ accessorKey: key, header: key })) : []} data={filteredVehicles ?? []}/>
+          <VehiclesTableComponent columns={filteredVehicles ? Object.keys(filteredVehicles[0] || {}).map(key => ({ accessorKey: key, header: key.charAt(0).toUpperCase() + key.slice(1).replace("_"," ") })) : []} data={filteredVehicles ?? []}/>
         </TabsContent>
       </Tabs>
     </div>

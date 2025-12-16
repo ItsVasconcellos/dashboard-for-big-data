@@ -54,58 +54,58 @@ export default function Dashboard() {
         }))
     }, [accidentSeverity])
 
-    const {data: servicesFrequency} = useQuery({
-      queryKey: ["servicesFrequency"],
-      queryFn: async () => getServiceFrequency(),
-    });
+    // const {data: servicesFrequency} = useQuery({
+    //   queryKey: ["servicesFrequency"],
+    //   queryFn: async () => getServiceFrequency(),
+    // });
 
-    const inverseServicesFrequency = useMemo(() => {
-      return servicesFrequency?.slice().reverse();
-    }, [servicesFrequency]);
+    // const inverseServicesFrequency = useMemo(() => {
+    //   return servicesFrequency?.slice().reverse();
+    // }, [servicesFrequency]);
 
-    type ChartDataPoint = {
-      date: string;
-      [key: string]: string | number; 
-    };
+    // type ChartDataPoint = {
+    //   date: string;
+    //   [key: string]: string | number; 
+    // };
     
-    const servicesFrequencyAreaChart = useMemo(() => {
-      if (!inverseServicesFrequency) return [];
+    // const servicesFrequencyAreaChart = useMemo(() => {
+    //   if (!inverseServicesFrequency) return [];
 
-      // 1. Explicitly type the reducer accumulator as a Record
-      const groupedData = inverseServicesFrequency.reduce<Record<string, ChartDataPoint>>((acc, curr) => {
-        const dateKey = curr._id.date;
-        const type = curr._id.fuelType;
-        const count = curr.count;
+    //   // 1. Explicitly type the reducer accumulator as a Record
+    //   const groupedData = inverseServicesFrequency.reduce<Record<string, ChartDataPoint>>((acc, curr) => {
+    //     const dateKey = curr._id.date;
+    //     const type = curr._id.fuelType;
+    //     const count = curr.count;
 
-        // If this date hasn't been seen yet, initialize it
-        if (!acc[dateKey]) {
-          acc[dateKey] = { date: dateKey };
-        }
+    //     // If this date hasn't been seen yet, initialize it
+    //     if (!acc[dateKey]) {
+    //       acc[dateKey] = { date: dateKey };
+    //     }
 
-        // Now TS knows 'type' is a valid key because of the index signature
-        acc[dateKey][type] = count;
+    //     // Now TS knows 'type' is a valid key because of the index signature
+    //     acc[dateKey][type] = count;
 
-        return acc;
-      }, {});
+    //     return acc;
+    //   }, {});
 
-      // 2. Convert back to an array
-      const chartData = Object.values(groupedData);
+    //   // 2. Convert back to an array
+    //   const chartData = Object.values(groupedData);
 
-      // 3. Sort by date using .getTime() (safest for TS arithmetic)
-      return chartData.sort((a, b) => 
-        new Date(a.date).getTime() - new Date(b.date).getTime()
-      );
+    //   // 3. Sort by date using .getTime() (safest for TS arithmetic)
+    //   return chartData.sort((a, b) => 
+    //     new Date(a.date).getTime() - new Date(b.date).getTime()
+    //   );
 
-    }, [inverseServicesFrequency]);
+    // }, [inverseServicesFrequency]);
   
-    console.log("accidentSeverityBarChartData:", servicesFrequencyAreaChart);
+    // console.log("accidentSeverityBarChartData:", servicesFrequencyAreaChart);
 
 
-    const AreaChartConfig = {
-    Diesel: { label: "Diesel", color: "hsl(var(--chart-1))" },
-    Petrol: { label: "Petrol", color: "hsl(var(--chart-2))" },
-    Hybrid: { label: "Hybrid", color: "hsl(var(--chart-3))" },
-    };
+    // const AreaChartConfig = {
+    // Diesel: { label: "Diesel", color: "hsl(var(--chart-1))" },
+    // Petrol: { label: "Petrol", color: "hsl(var(--chart-2))" },
+    // Hybrid: { label: "Hybrid", color: "hsl(var(--chart-3))" },
+    // };
 
 
     
@@ -123,14 +123,14 @@ export default function Dashboard() {
               {/* sales throught the months */}
 
           <div className="flex flex-col items-center p-6">
-            <Card className="p-6 w-full">
+            {/* <Card className="p-6 w-full">
               <CardHeader className="items-center pb-0">
                 <CardTitle>Services per type of fuel</CardTitle>
                 <CardDescription>Last 30 days available</CardDescription>
               </CardHeader>
               <CardContent>
                 <ChartContainer
-                  config={chartConfig} // Fixed: matches the variable name above
+                  config={AreaChartConfig} // Fixed: matches the variable name above
                   className="aspect-auto h-[250px] w-full"
                 >
                   <AreaChart data={servicesFrequencyAreaChart} className="w-full">
@@ -204,9 +204,8 @@ export default function Dashboard() {
                       }
                     />
                     
-                    {/* Ensure dataKey matches your DB value EXACTLY (Case Sensitive).
-                      Ensure fill matches the keys in AreaChartConfig.
-                    */}
+                    
+                    {/*
                     <Area
                       dataKey="Petrol"
                       type="natural"
@@ -232,7 +231,7 @@ export default function Dashboard() {
                   </AreaChart>
                 </ChartContainer>
               </CardContent>
-            </Card>
+            </Card> */}
             </div>
               {/* <Card>
                 <CardHeader className="items-center pb-0">

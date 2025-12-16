@@ -56,20 +56,28 @@ export default function VehiclesTableComponent<TData, TValue>({
   return (
     <div>
     <div className="overflow-hidden rounded-md border">
-      <div className="flex flex-row justify-center items-center py-4 gap-6">
+      <div className="flex justify-center py-4 gap-6">
         <Input
-          placeholder="Filter by Name..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter Manufacturer..."
+          value={(table.getColumn("manufacturer")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
+            table.getColumn("manufacturer")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
         <Input
-          placeholder="Filter by City..."
-          value={(table.getColumn("city")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter Fuel Type..."
+          value={(table.getColumn("fuel_type")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("city")?.setFilterValue(event.target.value)
+            table.getColumn("fuel_type")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+        <Input
+          placeholder="Filter by Engine Size..."
+          value={(table.getColumn("engine_size")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("engine_size")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
