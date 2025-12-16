@@ -6,7 +6,17 @@ db.Vehicles.aggregate([{$group: { _id: "$dealer_id", total_sales_value: { $sum: 
   { $sort: {name:1}}])
   
 // 2. Calculate the average selling price by manufacturer and year of manufacturing.    
-
+db.Vehicles.aggregate([
+  {
+    $group: {
+      _id: { manufacturer: "$manufacturer", year: "$year" },
+      averagePrice: { $avg: "$price" }
+    }
+  },
+  {
+    $sort: { "_id.manufacturer": 1, "_id.year": 1 }
+  }
+]);
 // 3. Find all cars that have been involved in more than two accidents. 
 db.Vehicles.find({$where:"this.accidents.length > 2"});
 
@@ -135,7 +145,7 @@ db.Vehicles.aggregate([{$group: { _id: "$dealer_id", totalAccidents: { $sum: {$c
   {$lookup: {from: "Dealers", localField: "_id", foreignField: "_id", as: "dealerDetails"}},
   { $unwind: "$dealerDetails" },
   {$addFields:{
-    accidentProneRatio: {$divide: ["totalAccidents", "cars_sold"]}
+    accidentProneRatio: {$divide: ["$totalAccidents", "$cars_sold"]}
   }},
   { $project: { _id: 0, dealer_id: "$_id", name: "$dealerDetails.name",cars_sold: 1, totalAccidents: 1, }},
   {$limit:3},  
@@ -198,11 +208,12 @@ db.Vehicles.aggregate([
       "numberOfIncidents": {$gt: 0}
     }
   },
-  {
-    $sort: {
-      "numberOfIncidents": -1
-    }
-  }
+  { $sort: {"numberOfIncidents": -1}},
+  { $project: {
+      _id: 1,
+      numberOfIncidents: 1, 
+      numberOfServices: 1
+    }}
 ])
 
 // 14. Compare the severity distribution of accidents (e.g., Minor, Moderate, Major) across all cars, grouped by manufacturer. 

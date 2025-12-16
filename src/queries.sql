@@ -4,7 +4,8 @@ join "Dealers" d on c.dealer_id = d.dealer_id group by c.dealer_id, d."name" ord
 
 
 -- 2. Calculate the average selling price by manufacturer and year of manufacturing.    
-select ROUND(AVG(c.price)::numeric,1), m."name", mm.year_of_manufacturing from "Manufacturers" m join "ManufacturersModels" mm on mm.manufacturer_id = m.manufacturer_id
+select ROUND(AVG(c.price)::numeric,1), m."name", mm.year_of_manufacturing from "Manufacturers" m 
+join "ManufacturersModels" mm on mm.manufacturer_id = m.manufacturer_id
 join "Cars" c on c.model_id = mm.manufacturer_model_id
 group by m."name", mm.year_of_manufacturing
 order by m."name", mm.year_of_manufacturing 
