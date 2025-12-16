@@ -147,9 +147,9 @@ db.Vehicles.aggregate([{$group: { _id: "$dealer_id", totalAccidents: { $sum: {$c
   {$addFields:{
     accidentProneRatio: {$divide: ["$totalAccidents", "$cars_sold"]}
   }},
-  { $project: { _id: 0, dealer_id: "$_id", name: "$dealerDetails.name",cars_sold: 1, totalAccidents: 1, }},
-  {$limit:3},  
-	{ $sort: {name:1}}])
+  { $project: { _id: 0, dealer_id: "$_id", name: "$dealerDetails.name",cars_sold: 1, totalAccidents: 1, accidentProneRatio: 1 }},
+	{ $sort: {accidentProneRatio:-1}},
+  {$limit:3}])
 
 // 11. Identify the most profitable manufacturer based on total sales minus average repair costs per car. 
 
