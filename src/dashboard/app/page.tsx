@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { useEffect, useMemo, useState } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { salesByCity } from "@/api/dealers/queries"
+import { salesByCity } from "@/api/dealers/sales"
 import { getAccidentSeverity } from "@/api/vehicles/accidents"
 import { getServiceFrequency } from "@/api/vehicles/services"
 
@@ -98,17 +98,7 @@ export default function Dashboard() {
    
     return(
      <div className="flex flex-col items-center p-6 w-full">
-        <Card className=" p-6">
-              <CardContent>
-                <h2 className="mb-2 text-2xl font-bold">Welcome to the Dashboard</h2>
-                <p className="text-muted-foreground">
-                  This is your dashboard where you can monitor key metrics and performance indicators.
-                </p>
-              </CardContent>
-            </Card>
-            <div className="flex flew-row items-center gap-4 my-10 w-3/4 ">
-              {/* sales throught the months */}
-
+            <div className="flex flew-row items-center gap-4 mb-10 w-3/4 ">
           <div className="flex flex-col items-center p-6 w-full">
              <Card className="p-6 w-full">
               <CardHeader className="items-center pb-0">
