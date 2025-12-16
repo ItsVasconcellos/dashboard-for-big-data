@@ -2,6 +2,7 @@
 import { getDealers } from "@/api/dealers/get";
 import { getVehicles } from "@/api/vehicles/get";
 import TableComponent from "@/components/table";
+import { Card, CardContent } from "@/components/ui/card"
 import { Tabs,TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -20,7 +21,11 @@ export default function TablePage(){
       const { accidents, services, ...rest } = item;
       return rest;
     });
-    if(isLoading ) return <div>Loading...</div>
+    if(isLoading ) return(    
+       <div className="max-w-7xl mx-auto py-8">
+          <div>Loading...</div>
+        </div>
+    );
     return(
 
     <div className="max-w-7xl mx-auto py-8">
@@ -30,6 +35,31 @@ export default function TablePage(){
           <TabsTrigger value="vehicles">Vehicles</TabsTrigger>
         </TabsList>
         <TabsContent value="dealers">
+          <div className="flex flex-row items-center py-6 gap-4">
+            <Card className="p-6">
+                <CardContent>
+                  <h2 className="mb-2 text-2xl font-bold">Welcome to the Dashboard</h2>
+                  <p className="text-muted-foreground">
+                    This is your dashboard where you can monitor key metrics and performance indicators.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="p-6">
+                <CardContent>
+                  <h2 className="mb-2 text-2xl font-bold">Welcome to the Dashboard</h2>
+                  <p className="text-muted-foreground">
+                    This is your dashboard where you can monitor key metrics and performance indicators.
+                  </p>
+                </CardContent>
+              </Card><Card className="p-6">
+                <CardContent>
+                  <h2 className="mb-2 text-2xl font-bold">Welcome to the Dashboard</h2>
+                  <p className="text-muted-foreground">
+                    This is your dashboard where you can monitor key metrics and performance indicators.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
           <TableComponent columns={dealersData ? Object.keys(dealersData[0] || {}).map(key => ({ accessorKey: key, header: key })) : []} data={dealersData ?? []}/>
         </TabsContent>
         <TabsContent value="vehicles">

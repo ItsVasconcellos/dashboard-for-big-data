@@ -1,13 +1,20 @@
 "use client"
-import { Bar, BarChart, Pie, PieChart } from "recharts"
+import { Bar, BarChart, CartesianGrid, Rectangle, XAxis, Pie, PieChart } from "recharts"
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
   type ChartConfig,
 } from "@/components/ui/chart"
-import { Card, CardContent } from "@/components/ui/card"
-import { useMemo } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
+import { useEffect, useMemo, useState } from "react"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { salesByCity } from "@/api/dealers/queries"
+import { getAccidentSeverity } from "@/api/vehicles/accidents"
+
 
 const chartData = [
   { month: "January", desktop: 186, mobile: 80 },
@@ -17,26 +24,45 @@ const chartData = [
   { month: "May", desktop: 209, mobile: 130 },
   { month: "June", desktop: 214, mobile: 140 },
 ]
-const rawPieData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-]
 
 
 const chartConfig = {
 } satisfies ChartConfig
 
 export default function Dashboard() {
-    const pieChartData = useMemo(() => {
-        return rawPieData.map((item, index) => ({
+    const queryClient = useQueryClient();
+    const {data: salesByMonthData} = useQuery({
+      queryKey: ["salesByMonth"],
+      queryFn: async () => salesByCity(),
+      }
+    );
+
+    const salesPieChartData = useMemo(() => {
+        return salesByMonthData?.map((item, index) => ({
         ...item,
         fill: "var(--chart-"+ ((index % 6) + 1)+ ")", 
         }))
-    }, [])
+    }, [salesByMonthData])
+    const [manufacturer, setManufacturer] = useState("Toyota");
+    console.log("manufacturer state:", manufacturer);
+
+    useEffect(() => {
+      queryClient.invalidateQueries({ queryKey: ["accidentSeverity", manufacturer] });
+    }, [manufacturer, queryClient]);
+
+    const {data: accidentSeverity} = useQuery({
+      queryKey: ["accidentSeverity", manufacturer],
+      queryFn: async () => getAccidentSeverity(manufacturer),
+    });
+    console.log("accidentSeverity data:", accidentSeverity);
+  
+    const accidentSeverityPieChartData = useMemo(() => {
+        return accidentSeverity?.map((item, index) => ({
+        ...item,
+        fill: "var(--chart-"+ ((index % 6) + 1)+ ")", 
+        }))
+    }, [accidentSeverity, manufacturer])
+
     return(
      <div className="flex flex-col items-center p-6">
         <Card className=" p-6">
@@ -47,19 +73,32 @@ export default function Dashboard() {
                 </p>
               </CardContent>
             </Card>
-            <div className="flex flew-row items-center gap-4">
-              {/* sales throught the months */}
-              <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+            <div className="flex flew-row items-center gap-4 my-10 ">
+              {/* sales throught the months */}<Card>
+                <CardHeader className="items-center pb-0">
+                  <CardTitle>Severity of accidents per manufacturer </CardTitle>
+                  <CardDescription>Manufacturer: {manufacturer}</CardDescription>
+                </CardHeader>
+                <CardContent>
+              <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
                 <BarChart accessibilityLayer data={chartData} className=" w-8/9">
                   <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
                   <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
                 </BarChart>
               </ChartContainer>
-              <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+              </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="items-center pb-0">
+                  <CardTitle>Severity of accidents per manufacturer </CardTitle>
+                  <CardDescription>Manufacturer: {manufacturer}</CardDescription>
+                </CardHeader>
+                <CardContent>
+              <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
                 {/*  Bar chart for the different brands */}
                 <PieChart accessibilityLayer>
                   <Pie 
-                    data={pieChartData} 
+                    data={salesPieChartData || []} 
                     dataKey="desktop" 
                     nameKey="month" 
                     radius={80}
@@ -67,27 +106,87 @@ export default function Dashboard() {
                   <ChartTooltip content={<ChartTooltipContent hideLabel />} />
                 </PieChart>
               </ChartContainer>
+              </CardContent>
+              </Card>
             </div>
              <div className="flex flew-row items-center gap-4">
-              <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+              <Card>
+                <CardHeader className="items-center pb-0">
+                  <CardTitle>Severity of accidents per manufacturer </CardTitle>
+                  <CardDescription>Manufacturer: {manufacturer}</CardDescription>
+                  <Select defaultValue="Toyota" onValueChange={setManufacturer}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Select a manufacturer" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Toyota" key="Toyota" >Toyota</SelectItem>
+                      <SelectItem value="VW" key="VW">VW</SelectItem>
+                      <SelectItem value="BMW" key="BMW">BMW</SelectItem>
+                      <SelectItem value="Ford" key="Ford">Ford</SelectItem>
+                      <SelectItem value="Porsche" key="Porsche">Porsche</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </CardHeader>
+                <CardContent>
+              <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
               {/* Accident severity */}
-                <BarChart accessibilityLayer data={chartData}>
-                  <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-                  <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
-                </BarChart>
-              </ChartContainer>
-            {/* Sales distribution throught the cities */}
-              <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-                <PieChart accessibilityLayer>
-                  <Pie 
-                    data={pieChartData} 
-                    dataKey="desktop" 
-                    nameKey="month" 
-                    radius={80}
+                <BarChart accessibilityLayer data={accidentSeverityPieChartData || []} className=" w-8/9">
+                 <CartesianGrid vertical={false} />
+                  <XAxis
+                    dataKey="severity"
+                    tickLine={false}
+                    tickMargin={10}
+                    axisLine={false}
+                    tickFormatter={(value) =>
+                    chartConfig[value as keyof typeof chartConfig]?.label || value
+                    }
                   />
-                  <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-                </PieChart>
-              </ChartContainer>
+                  <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent hideLabel />}
+                  />
+                  <Bar
+                    dataKey="count"
+                    fill="var(--chart-1)"
+                    strokeWidth={2}
+                    radius={8}
+                    activeIndex={2}
+                    activeBar={({ ...props }) => {
+                    return (
+                      <Rectangle
+                      {...props}
+                      fillOpacity={0.8}
+                      stroke={props.payload.fill}
+                      strokeDasharray={4}
+                      strokeDashoffset={4}
+                      />
+                    )
+                    }}
+                  />
+                  </BarChart>
+                  </ChartContainer>
+                </CardContent>
+              </Card>
+            {/* Sales distribution throught the cities */}
+              <Card className="min-h-[470px]">
+                <CardHeader className="items-center pb-0">
+                  <CardTitle>Sales per city - Top 10 </CardTitle>
+                  <CardDescription>Period: All time</CardDescription>
+                </CardHeader>
+                <CardContent>
+                <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
+                  <PieChart accessibilityLayer>
+                    <Pie 
+                      data={salesPieChartData || []} 
+                      dataKey="total_sales_value" 
+                      nameKey="name" 
+                      radius={80}
+                    />
+                    <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+                  </PieChart>
+                </ChartContainer>
+                </CardContent>
+              </Card>
             </div>
       </div>
     );
