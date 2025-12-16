@@ -54,63 +54,50 @@ export default function Dashboard() {
         }))
     }, [accidentSeverity])
 
-    // const {data: servicesFrequency} = useQuery({
-    //   queryKey: ["servicesFrequency"],
-    //   queryFn: async () => getServiceFrequency(),
-    // });
+    const {data: servicesFrequency} = useQuery({
+      queryKey: ["servicesFrequency"],
+      queryFn: async () => getServiceFrequency(),
+    });
 
-    // const inverseServicesFrequency = useMemo(() => {
-    //   return servicesFrequency?.slice().reverse();
-    // }, [servicesFrequency]);
+    const inverseServicesFrequency = useMemo(() => {
+      return servicesFrequency?.slice().reverse();
+    }, [servicesFrequency]);
 
-    // type ChartDataPoint = {
-    //   date: string;
-    //   [key: string]: string | number; 
-    // };
+    type ChartDataPoint = {
+      date: string;
+      [key: string]: string | number; 
+    };
     
-    // const servicesFrequencyAreaChart = useMemo(() => {
-    //   if (!inverseServicesFrequency) return [];
+    const servicesFrequencyAreaChart = useMemo(() => {
+      if (!inverseServicesFrequency) return [];
 
-    //   // 1. Explicitly type the reducer accumulator as a Record
-    //   const groupedData = inverseServicesFrequency.reduce<Record<string, ChartDataPoint>>((acc, curr) => {
-    //     const dateKey = curr._id.date;
-    //     const type = curr._id.fuelType;
-    //     const count = curr.count;
+      const groupedData = inverseServicesFrequency.reduce<Record<string, ChartDataPoint>>((acc, curr) => {
+        const dateKey = curr._id.date;
+        const type = curr._id.fuelType;
+        const count = curr.count;
 
-    //     // If this date hasn't been seen yet, initialize it
-    //     if (!acc[dateKey]) {
-    //       acc[dateKey] = { date: dateKey };
-    //     }
+        if (!acc[dateKey]) {
+          acc[dateKey] = { date: dateKey };
+        }
 
-    //     // Now TS knows 'type' is a valid key because of the index signature
-    //     acc[dateKey][type] = count;
+        acc[dateKey][type] = count;
 
-    //     return acc;
-    //   }, {});
+        return acc;
+      }, {});
 
-    //   // 2. Convert back to an array
-    //   const chartData = Object.values(groupedData);
+      const chartData = Object.values(groupedData);
+      return chartData
 
-    //   // 3. Sort by date using .getTime() (safest for TS arithmetic)
-    //   return chartData.sort((a, b) => 
-    //     new Date(a.date).getTime() - new Date(b.date).getTime()
-    //   );
+    }, [inverseServicesFrequency]);
 
-    // }, [inverseServicesFrequency]);
-  
-    // console.log("accidentSeverityBarChartData:", servicesFrequencyAreaChart);
-
-
-    // const AreaChartConfig = {
-    // Diesel: { label: "Diesel", color: "hsl(var(--chart-1))" },
-    // Petrol: { label: "Petrol", color: "hsl(var(--chart-2))" },
-    // Hybrid: { label: "Hybrid", color: "hsl(var(--chart-3))" },
-    // };
-
-
-    
+    const AreaChartConfig = {
+    Diesel: { label: "Diesel", color: "var(--chart-1)" },
+    Petrol: { label: "Petrol", color: "var(--chart-2)" },
+    Hybrid: { label: "Hybrid", color: "var(--chart-3)" },
+    };
+   
     return(
-     <div className="flex flex-col items-center p-6">
+     <div className="flex flex-col items-center p-6 w-full">
         <Card className=" p-6">
               <CardContent>
                 <h2 className="mb-2 text-2xl font-bold">Welcome to the Dashboard</h2>
@@ -119,18 +106,18 @@ export default function Dashboard() {
                 </p>
               </CardContent>
             </Card>
-            <div className="flex flew-row items-center gap-4 my-10 ">
+            <div className="flex flew-row items-center gap-4 my-10 w-3/4 ">
               {/* sales throught the months */}
 
-          <div className="flex flex-col items-center p-6">
-            {/* <Card className="p-6 w-full">
+          <div className="flex flex-col items-center p-6 w-full">
+             <Card className="p-6 w-full">
               <CardHeader className="items-center pb-0">
                 <CardTitle>Services per type of fuel</CardTitle>
-                <CardDescription>Last 30 days available</CardDescription>
+                <CardDescription>Divided by month of the year</CardDescription>
               </CardHeader>
               <CardContent>
                 <ChartContainer
-                  config={AreaChartConfig} // Fixed: matches the variable name above
+                  config={AreaChartConfig} 
                   className="aspect-auto h-[250px] w-full"
                 >
                   <AreaChart data={servicesFrequencyAreaChart} className="w-full">
@@ -181,31 +168,23 @@ export default function Dashboard() {
                       axisLine={false}
                       tickMargin={8}
                       minTickGap={32}
-                      tickFormatter={(value) => {
-                        const date = new Date(value);
-                        return date.toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                        });
-                      }}
+                      // tickFormatter={(value) => {value}}
                     />
                     <ChartTooltip
                       cursor={false}
                       content={
                         <ChartTooltipContent
                           labelFormatter={(value) => {
-                            return new Date(value).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                            });
-                          }}
+                            return `Month: ${value}`;
+                          } }
+                          hideLabel={false}
                           indicator="dot"
                         />
                       }
                     />
                     
                     
-                    {/*
+                    
                     <Area
                       dataKey="Petrol"
                       type="natural"
@@ -231,7 +210,7 @@ export default function Dashboard() {
                   </AreaChart>
                 </ChartContainer>
               </CardContent>
-            </Card> */}
+            </Card> 
             </div>
               {/* <Card>
                 <CardHeader className="items-center pb-0">

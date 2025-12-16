@@ -19,16 +19,17 @@ export async function getServiceFrequency(): Promise<ServiceFrequencyResult[]> {
                 $group: {
                     _id: {
                         date: {
-                            $dateToString: { format: "%Y-%m-%d", date: "$serviceDate" }
+                            $dateToString: { format: "%b", date: "$serviceDate" }
                         },
                         fuelType: "$fuel_type"
                     },
-                    count: { $sum: 1 }
+                    count: { $sum: 1 },
+                    monthNumber: { $first: { $month: "$serviceDate" } }
                 }
             },
 
-            { $sort: { "_id.date": -1 } },
-            { $limit: 90 }
+            { $sort: { "monthNumber": -1 } },
+            { $project: { monthNumber: 0 } }
         ]
     });
     return vehicles as unknown as ServiceFrequencyResult[];
